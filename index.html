@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Policejní MDT - Wobbler Version</title>
-    <link rel="favicon" href="images/favicon-32x32.png">
+    <title>Policejní MDT</title>
+    <link rel="icon" href="images/favicon-32x32.png"> 
     <style>
         :root {
             --police-blue: #1a237e;
@@ -14,7 +14,7 @@
             --accent: #2979ff;
             --crime: #ff5252;
             --misdemeanor: #ffab40;
-            --wobbler: #448aff; /* Původně infraction, nyní barva pro Wobbler */
+            --wobbler: #448aff;
         }
 
         body {
@@ -27,7 +27,6 @@
             align-items: center;
         }
 
-        /* Navigace */
         nav {
             width: 100%;
             background-color: var(--police-blue);
@@ -67,7 +66,6 @@
         .page { display: none; text-align: left; }
         .active { display: block; }
 
-        /* Formulář */
         .grid-form {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -89,58 +87,43 @@
         }
         input:focus { border-color: var(--accent); }
 
-        /* SEZNAM ZÁKONŮ */
-        .search-box { margin-bottom: 15px; }
-        .search-box input { border: 2px solid var(--accent); font-size: 1rem; }
-
         .laws-selection {
-            max-height: 450px;
+            max-height: 500px;
             overflow-y: auto;
             border: 1px solid #333;
             background: #151515;
             border-radius: 8px;
         }
 
+        .category-header {
+            background: #252525;
+            padding: 10px 15px;
+            font-weight: bold;
+            color: var(--accent);
+            border-bottom: 1px solid #444;
+            border-top: 1px solid #444;
+        }
+
         .law-item {
             display: flex;
             align-items: center;
-            padding: 12px 15px;
+            padding: 10px 15px;
             border-bottom: 1px solid #222;
             gap: 15px;
-            transition: background 0.2s;
-            text-align: left;
-        }
-        .law-item:hover { background: #1f1f1f; }
-
-        .law-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin: 0;
-            flex-shrink: 0;
-            cursor: pointer;
         }
 
         .tag {
-            min-width: 100px;
-            padding: 4px 0;
+            min-width: 90px;
+            padding: 3px 0;
             border-radius: 4px;
             font-size: 0.7rem;
             font-weight: 900;
             text-align: center;
             text-transform: uppercase;
-            flex-shrink: 0;
-            display: inline-block;
         }
         .tag-tc { background: var(--crime); color: white; }
         .tag-pc { background: var(--misdemeanor); color: black; }
         .tag-wobbler { background: var(--wobbler); color: white; }
-
-        .law-text {
-            flex-grow: 1;
-            font-size: 0.95rem;
-        }
-
-        .law-text strong { color: #fff; }
 
         .btn-generate {
             background: #2e7d32;
@@ -153,26 +136,18 @@
             cursor: pointer;
             border-radius: 8px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
-        .btn-generate:hover { background: #388e3c; }
 
         #output-area {
             margin-top: 25px;
             background: #0a0a0a;
             color: #e0e0e0;
-            font-family: 'Consolas', 'Monaco', monospace;
-            padding: 25px;
+            font-family: monospace;
+            padding: 20px;
             white-space: pre-wrap;
             border: 1px solid #333;
             border-radius: 8px;
-            cursor: pointer;
-            line-height: 1.5;
         }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #333; padding: 12px; text-align: left; }
-        th { background: var(--police-blue); font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -184,264 +159,137 @@
     </nav>
 
     <div id="page-home" class="container page active">
-        <h1>Vítejte v MDT</h1>
-        <p>Systém pro evidenci a generování reportů do CPZ.</p>
-        <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
-        <p>Pro začátek klikněte na <strong>CPZ Generátor</strong> v horním menu.</p>
+        <h1>MDT - Policejní systém</h1>
+        <p>Vítejte v systému pro evidenci zadržených osob.</p>
     </div>
 
     <div id="page-cpz" class="container page">
         <h1>CPZ Report Generator</h1>
         
         <div class="grid-form">
-            <div><label>Jméno</label><input type="text" id="sus-name" placeholder="John" autocomplete="off"></div>
-            <div><label>Příjmení</label><input type="text" id="sus-surname" placeholder="Doe" autocomplete="off"></div>
-            <div><label>Datum narození</label><input type="text" id="sus-dob" placeholder="01.01.1995" autocomplete="off"></div>
-            <div><label>Pohlaví</label><select id="sus-gender"><option value="Muž">Muž</option><option value="Žena">Žena</option></select></div>
-            <div class="full-width"><label>Důvod zadržení</label><input type="text" id="sus-reason" placeholder="Krádež vozidla." autocomplete="off"></div>
-            <div><label>Policista</label><input type="text" id="officer" placeholder="<@disID>" autocomplete="true"></div>
-            <div><label>Miranda</label><select id="miranda"><option value="ANO">ANO</option><option value="NE">NE</option></select></div>
-            <div class="full-width"><label>Věci k navrácení</label><input type="text" id="items-return" placeholder="ID, DL, telefon" autocomplete="off"></div>
-            <div class="full-width"><label>Věci do evidence</label><input type="text" id="items-evidence" placeholder="50g marihuany" autocomplete="off"></div>
-        </div>
-
-        <div class="search-box">
-            <label>Hledat v zákonech:</label>
-            <input type="text" id="law-search" placeholder="Hledat..." onkeyup="filterLaws()">
+            <div><label>Jméno</label><input type="text" id="sus-name" placeholder="John"></div>
+            <div><label>Příjmení</label><input type="text" id="sus-surname" placeholder="Doe"></div>
+            <div><label>Datum narození</label><input type="text" id="sus-dob" placeholder="01.01.1995"></div>
+            <div><label>Pohlaví</label><select id="sus-gender"><option>Muž</option><option>Žena</option></select></div>
+            <div class="full-width"><label>Důvod zadržení</label><input type="text" id="sus-reason" placeholder="Popis incidentu"></div>
+            <div><label>Policista (ID)</label><input type="text" id="officer" placeholder="Zadejte své ID"></div>
+            <div><label>Miranda</label><select id="miranda"><option>ANO</option><option>NE</option></select></div>
         </div>
 
         <div class="laws-selection" id="laws-list"></div>
 
         <button class="btn-generate" onclick="generateReport()">VYGENEROVAT A ZKOPIROVAT</button>
-
-        <div id="output-area" onclick="copyToClipboard()" title="Klikněte pro kopírování">
-            Vyplňte formulář a vyberte paragrafy...
-        </div>
+        <div id="output-area">Zde se objeví výsledek...</div>
     </div>
 
     <div id="page-laws" class="container page">
         <h1>Kompletní sazebník</h1>
-        <table id="laws-table">
-            <thead>
-                <tr>
-                    <th>Kod</th>
-                    <th>Typ</th>
-                    <th>Znění (CZ/EN)</th>
-                    <th>Pokuta</th>
-                    <th>Vazba</th>
-                </tr>
-            </thead>
-            <tbody id="laws-table-body"></tbody>
-        </table>
+        <div id="full-sazebnik-table"></div>
     </div>
 
     <script>
         const lawsDatabase = [
-            // I. Trestné činy proti spravodlivosti
-            { id: 1, code: "PC31", type: "Wobbler", cz: "Spolupachatelství", en: "Aiding and Abetting", fine: 0, jail: "dle hlavního" },
-            { id: 2, code: "PC32", type: "Wobbler", cz: "Ukrytí pachatele", en: "Accessory After the Fact", fine: 15000, jail: 8 },
-            { id: 3, code: "PC67", type: "Felony", cz: "Nabízení úplatku", en: "Bribery", fine: 20000, jail: 10 },
-            { id: 4, code: "PC118", type: "Felony", cz: "Křivá výpověď", en: "Perjury", fine: 10000, jail: 6 },
-            { id: 5, code: "PC148.3", type: "Misdemeanor", cz: "Zneužití tísňové linky", en: "False Emergency", fine: 10000, jail: 0 },
-            
-            // II. Verejný poriadok
-            { id: 6, code: "PC148(a)(1)", type: "Misdemeanor", cz: "Bránění zatknutí", en: "Resisting Officer", fine: 4000, jail: 4 },
-            { id: 7, code: "PC415", type: "Misdemeanor", cz: "Rušení veřejného pořádku", en: "Disturbing the Peace", fine: 5000, jail: 0 },
-            { id: 8, code: "PC602", type: "Misdemeanor", cz: "Vstup na cizí pozemek", en: "Trespassing", fine: 6000, jail: 2 },
-            { id: 9, code: "PC646.9", type: "Wobbler", cz: "Stalking", en: "Stalking", fine: 15000, jail: 12 },
-            { id: 10, code: "PC186.22", type: "Felony", cz: "Gangová činnost", en: "Gang Participation", fine: 30000, jail: 16 },
-            { id: 11, code: "PC12022.2(a)", type: "Felony", cz: "Nošení vesty při násilném činu", en: "Wearing body armor", fine: 3000, jail: 4 },
-            { id: 12, code: "PC31360", type: "Felony", cz: "Nelegální držení balistické vesty", en: "Unlawful possession of body armor", fine: 5000, jail: 2 },
-
-            // III. Majetková kriminalita
-            { id: 13, code: "PC484", type: "Misdemeanor", cz: "Drobná krádež", en: "Petty Theft", fine: 4000, jail: 2 },
-            { id: 14, code: "PC487", type: "Wobbler", cz: "Velká krádež", en: "Grand Theft", fine: 15000, jail: 12 },
-            { id: 15, code: "PC518", type: "Felony", cz: "Vydírání", en: "Extortion", fine: 25000, jail: 14 },
-            { id: 16, code: "PC594", type: "Wobbler", cz: "Vandalizmus", en: "Vandalism", fine: 12000, jail: 5 },
-            { id: 17, code: "PC594.35", type: "Wobbler", cz: "Vykrádání hrobů", en: "Cemetery Vandalism", fine: 15000, jail: 2 },
-
-            // IV. Vlámania, lúpeže
-            { id: 18, code: "PC213(a)(1)", type: "Felony", cz: "Loupež I. stupně", en: "Robbery 1st Degree", fine: 40000, jail: 14 },
-            { id: 19, code: "PC213(a)(2)", type: "Felony", cz: "Loupež II. stupně", en: "Robbery 2nd Degree", fine: 30000, jail: 12 },
-            { id: 20, code: "PC215", type: "Felony", cz: "Vykrádání vozidla", en: "Carjacking", fine: 13000, jail: 6 },
-            { id: 21, code: "PC459I", type: "Felony", cz: "Vloupání I. stupně", en: "Burglary 1st Degree", fine: 40000, jail: 12 },
-            { id: 22, code: "PC459II", type: "Wobbler", cz: "Vloupání II. stupně", en: "Burglary 2nd Degree", fine: 30000, jail: 9 },
-
-            // V. Násilné trestné činy
-            { id: 23, code: "PC187-1", type: "Felony", cz: "Vražda I. stupně", en: "Murder 1st Degree", fine: 0, jail: "Doživotie" },
-            { id: 24, code: "PC187-2", type: "Felony", cz: "Vražda II. stupně", en: "Murder 2nd Degree", fine: 0, jail: "Doživotie" },
-            { id: 25, code: "PC192V", type: "Felony", cz: "Zabití dobrovolné", en: "Voluntary Manslaughter", fine: 85000, jail: 40 },
-            { id: 26, code: "PC192I", type: "Felony", cz: "Zabití nedobrovolné", en: "Involuntary Manslaughter", fine: 35000, jail: 16 },
-            { id: 27, code: "PC203", type: "Felony", cz: "Mrzačení", en: "Mayhem", fine: 45000, jail: 32 },
-            { id: 28, code: "PC206", type: "Felony", cz: "Mučení", en: "Torture", fine: 0, jail: "Doživotie" },
-            { id: 29, code: "PC207", type: "Felony", cz: "Únos", en: "Kidnapping", fine: 60000, jail: 13 },
-            { id: 30, code: "PC261", type: "Felony", cz: "Znásilnění", en: "Rape", fine: 40000, jail: 25 },
-            { id: 31, code: "PC664/187", type: "Felony", cz: "Pokus o vraždu", en: "Attempted Murder", fine: 55000, jail: 10 },
-
-            // VI. Zbrane
-            { id: 32, code: "PC29800", type: "Felony", cz: "Nelegální držení zbraně", en: "Prohibited Possession", fine: 25000, jail: 8 },
-            { id: 33, code: "PC30605", type: "Felony", cz: "Držení nelegální zbraně", en: "Assault Weapon", fine: 35000, jail: 13 },
-            { id: 34, code: "PC30600", type: "Felony", cz: "Automatická zbraň", en: "Assault Weapon", fine: 55000, jail: 15 },
-            { id: 35, code: "PC25850", type: "Misdemeanor", cz: "Nabitá zbraň", en: "Carrying Loaded Firearm", fine: 12000, jail: 2 },
-            { id: 36, code: "PC417(a)(2)", type: "Misdemeanor", cz: "Ohrožování zbraní", en: "Brandishing Weapon", fine: 10000, jail: 3 },
-            { id: 37, code: "PC246.3", type: "Wobbler", cz: "Nedbalá střelba", en: "Negligent Discharge", fine: 25000, jail: 9 },
-            { id: 38, code: "PC25850(a)", type: "Wobbler", cz: "Nelegální open carry (nabitá)", en: "Loaded firearm in public", fine: 1000, jail: 3 },
-            { id: 39, code: "PC26350", type: "Misdemeanor", cz: "Otevřené nošení dlouhé zbraně", en: "Open Carry Long Gun", fine: 7000, jail: 2 },
-
-            // VII. Proti policajtom
-            { id: 40, code: "PC148-P", type: "Misdemeanor", cz: "Odporování policistovy", en: "Resisting Officer", fine: 5000, jail: 3 },
-            { id: 41, code: "PC69", type: "Felony", cz: "Výhružka policistovy", en: "Threats Against Officer", fine: 15000, jail: 2 },
-            { id: 42, code: "PC241(c)", type: "Wobbler", cz: "Útok na policistu", en: "Assault on Officer", fine: 20000, jail: 5 },
-            { id: 43, code: "PC245(d)(1)", type: "Felony", cz: "Útok zbraní na policistu", en: "ADW on Officer", fine: 27000, jail: 15 },
-            { id: 44, code: "PC245(d)(3)", type: "Felony", cz: "Střelba na policistu", en: "Shooting at Officer", fine: 32000, jail: 13 },
-            { id: 45, code: "PC148(a)(1)", type: "Misdemeanor", cz: "Neuposlechnutí výzvy", en: "Resisting, delaying peace officer", fine: 5000, jail: 1 },
-
-            // VIII. Drogy
-            { id: 46, code: "HS11377", type: "Misdemeanor", cz: "Držba metamfetamínu", en: "Possession of Meth", fine: 4000, jail: 3 },
-            { id: 47, code: "HS11378", type: "Felony", cz: "Držba na prodej", en: "Possession for Sale", fine: 20000, jail: 10 },
-            { id: 48, code: "HS11379", type: "Felony", cz: "Prodej drog", en: "Sale of Drugs", fine: 23000, jail: 14 },
-            { id: 49, code: "HS11359", type: "Felony", cz: "Marihuana na prodej", en: "Marijuana for Sale", fine: 25000, jail: 15 },
-            { id: 50, code: "HS11358", type: "Felony", cz: "Pěstovaní marihuany", en: "Cultivation of Marijuana", fine: 28000, jail: 12 },
-
-            // IX. Dopravné
-            { id: 51, code: "VC22349", type: "Wobbler", cz: "Prekročení max. rychlosti", en: "Speeding", fine: 2000, jail: 0 },
-            { id: 52, code: "VC22350", type: "Wobbler", cz: "Nepřiměřená rychlosť", en: "Basic Speed Law", fine: 3000, jail: 0 },
-            { id: 53, code: "VC22349-15", type: "Wobbler", cz: "Překročení rychlosti +15 mph", en: "Speeding 1–15 mph Over", fine: 3000, jail: 0 },
-            { id: 54, code: "VC22349-25", type: "Wobbler", cz: "Překročení rychlosti +16–25 mph", en: "Speeding 16–25 mph Over", fine: 4000, jail: 0 },
-            { id: 55, code: "VC22349-26", type: "Misdemeanor", cz: "Vysoké překročení rychlosti", en: "Speeding 26+ mph Over", fine: 6000, jail: 1 },
-            { id: 56, code: "VC23103", type: "Misdemeanor", cz: "Bezohledná jízda", en: "Reckless Driving", fine: 8000, jail: 1 },
-            { id: 57, code: "VC22348(b)", type: "Misdemeanor", cz: "Extrémna rychlost (>100 mph)", en: "Speeding Over 100 mph", fine: 10000, jail: 2 },
-            { id: 58, code: "VC2800.1", type: "Misdemeanor", cz: "Únik polícii", en: "Evading Police", fine: 6000, jail: 2 },
-            { id: 59, code: "VC2800.2", type: "Felony", cz: "Nebezpečný únik", en: "Felony Evading", fine: 9000, jail: 3 },
-            { id: 60, code: "VC20001", type: "Felony", cz: "Hit & Run se zraněním", en: "Hit and Run Injury", fine: 2000, jail: 4 },
-            { id: 61, code: "VC23152", type: "Misdemeanor", cz: "Jízda pod vlivem", en: "DUI", fine: 4000, jail: 1 },
-            { id: 62, code: "VC14601", type: "Misdemeanor", cz: "Jízda se zákazem", en: "Driving on Suspended License", fine: 5000, jail: 2 },
-            { id: 63, code: "VC27156", type: "Wobbler", cz: "Nelegální tuning", en: "Illegal Vehicle Modification", fine: 5000, jail: 0 },
-            { id: 64, code: "VC24002", type: "Misdemeanor", cz: "Nebezpečně upravené vozidlo", en: "Unsafe Vehicle Modification", fine: 7000, jail: 1 },
-            { id: 65, code: "VC27600", type: "Wobbler", cz: "Nelegální neony", en: "Illegal Lighting Equipment", fine: 3000, jail: 0 },
-            { id: 66, code: "VC5200", type: "Wobbler", cz: "Jízda bez ŠPZ", en: "Jet without license plates", fine: 1000, jail: 0 }
+            { cat: "I. Trestné činy proti spravedlnosti", laws: [
+                { id: 1, code: "PC31", type: "Wobbler", cz: "Spolupachatelství", en: "Aiding and Abetting", fine: 0, jail: "dle hlavního" },
+                { id: 2, code: "PC32", type: "Wobbler", cz: "Ukrytí pachatele", en: "Accessory After the Fact", fine: 15000, jail: 8 },
+                { id: 3, code: "PC67", type: "Felony", cz: "Nabízení úplatku", en: "Bribery", fine: 20000, jail: 10 }
+            ]},
+            { cat: "II. Veřejný pořádek", laws: [
+                { id: 6, code: "PC148(a)(1)", type: "Misdemeanor", cz: "Bránění zatknutí", en: "Resisting Officer", fine: 4000, jail: 4 },
+                { id: 7, code: "PC415", type: "Misdemeanor", cz: "Rušení veřejného pořádku", en: "Disturbing the Peace", fine: 5000, jail: 0 },
+                { id: 10, code: "PC186.22", type: "Felony", cz: "Gangová činnost", en: "Gang Participation", fine: 30000, jail: 16 }
+            ]},
+            { cat: "III. Majetková kriminalita", laws: [
+                { id: 13, code: "PC484", type: "Misdemeanor", cz: "Drobná krádež", en: "Petty Theft", fine: 4000, jail: 2 },
+                { id: 14, code: "PC487", type: "Wobbler", cz: "Velká krádež", en: "Grand Theft", fine: 15000, jail: 12 },
+                { id: 16, code: "PC594", type: "Wobbler", cz: "Vandalizmus", en: "Vandalism", fine: 12000, jail: 5 }
+            ]},
+            { cat: "IV. Vloupání a loupeže", laws: [
+                { id: 18, code: "PC213(a)(1)", type: "Felony", cz: "Loupež I. stupně", en: "Robbery 1st Degree", fine: 40000, jail: 14 },
+                { id: 20, code: "PC215", type: "Felony", cz: "Vykrádání vozidla", en: "Carjacking", fine: 13000, jail: 6 }
+            ]},
+            { cat: "V. Násilné trestné činy", laws: [
+                { id: 23, code: "PC187-1", type: "Felony", cz: "Vražda I. stupně", en: "Murder 1st Degree", fine: 0, jail: "Doživotí" },
+                { id: 29, code: "PC207", type: "Felony", cz: "Únos", en: "Kidnapping", fine: 60000, jail: 13 },
+                { id: 31, code: "PC664/187", type: "Felony", cz: "Pokus o vraždu", en: "Attempted Murder", fine: 55000, jail: 10 }
+            ]},
+            { cat: "VI. Zbraně", laws: [
+                { id: 32, code: "PC29800", type: "Felony", cz: "Nelegální držení zbraně", en: "Prohibited Possession", fine: 25000, jail: 8 },
+                { id: 34, code: "PC30600", type: "Felony", cz: "Automatická zbraň", en: "Assault Weapon", fine: 55000, jail: 15 }
+            ]},
+            { cat: "VII. Dopravní přestupky", laws: [
+                { id: 51, code: "VC22349", type: "Wobbler", cz: "Překročení rychlosti", en: "Speeding", fine: 2000, jail: 0 },
+                { id: 58, code: "VC2800.1", type: "Misdemeanor", cz: "Únik policii", en: "Evading Police", fine: 6000, jail: 2 },
+                { id: 61, code: "VC23152", type: "Misdemeanor", cz: "Jízda pod vlivem", en: "DUI", fine: 4000, jail: 1 }
+            ]}
         ];
 
-        function showPage(pageId) {
+        function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            window.scrollTo(0,0);
+            document.getElementById(id).classList.add('active');
         }
 
         function getTagClass(type) {
             if (type === "Felony") return "tag-tc";
             if (type === "Misdemeanor") return "tag-pc";
-            if (type === "Wobbler") return "tag-wobbler";
             return "tag-wobbler";
         }
 
-        function initLaws() {
-            const listDiv = document.getElementById('laws-list');
-            const tableBody = document.getElementById('laws-table-body');
-            lawsDatabase.forEach(law => {
-                const tagClass = getTagClass(law.type);
-                listDiv.innerHTML += `
-                    <div class="law-item">
-                        <input type="checkbox" class="law-checkbox" value="${law.id}">
-                        <span class="tag ${tagClass}">${law.type}</span>
-                        <div class="law-text"><strong>${law.code}</strong> - ${law.cz}</div>
-                    </div>`;
-                tableBody.innerHTML += `
-                    <tr>
-                        <td><strong>${law.code}</strong></td>
-                        <td><span class="tag ${tagClass}">${law.type}</span></td>
-                        <td>${law.cz} / ${law.en}</td>
-                        <td>${law.fine}$</td>
-                        <td>${law.jail}</td>
-                    </tr>`;
-            });
-        }
+        function init() {
+            const list = document.getElementById('laws-list');
+            const officerInput = document.getElementById('officer');
 
-        function filterLaws() {
-            const input = document.getElementById('law-search').value.toLowerCase();
-            document.querySelectorAll('.law-item').forEach(item => {
-                item.style.display = item.innerText.toLowerCase().includes(input) ? "flex" : "none";
+            // Načtení ID z paměti
+            const savedID = localStorage.getItem('officerID');
+            if (savedID) officerInput.value = savedID;
+
+            // Ukládání ID při změně
+            officerInput.addEventListener('input', () => {
+                localStorage.setItem('officerID', officerInput.value);
+            });
+
+            lawsDatabase.forEach(group => {
+                list.innerHTML += `<div class="category-header">${group.cat}</div>`;
+                group.laws.forEach(law => {
+                    list.innerHTML += `
+                        <div class="law-item">
+                            <input type="checkbox" class="law-cb" data-id="${law.id}" data-cat="${group.cat}">
+                            <span class="tag ${getTagClass(law.type)}">${law.type}</span>
+                            <span><strong>${law.code}</strong> - ${law.cz}</span>
+                        </div>`;
+                });
             });
         }
 
         function generateReport() {
+            const officer = document.getElementById('officer').value;
             const name = document.getElementById('sus-name').value;
             const surname = document.getElementById('sus-surname').value;
-            const dob = document.getElementById('sus-dob').value;
-            const gender = document.getElementById('sus-gender').value;
             const reason = document.getElementById('sus-reason').value;
-            const officer = document.getElementById('officer').value;
-            const miranda = document.getElementById('miranda').value;
-            const itemsRet = document.getElementById('items-return').value || "žádné";
-            const itemsEvid = document.getElementById('items-evidence').value || "žádné";
+            
+            let fine = 0;
+            let jail = 0;
+            let charges = "";
 
-            let totalFine = 0;
-            let totalJail = 0;
-            let chargesBlocks = "";
-            let lifeImprisonment = false;
-
-            document.querySelectorAll('.law-checkbox:checked').forEach(cb => {
-                const law = lawsDatabase.find(l => l.id == cb.value);
-                totalFine += law.fine;
+            document.querySelectorAll('.law-cb:checked').forEach(cb => {
+                const id = cb.getAttribute('data-id');
+                const cat = cb.getAttribute('data-cat');
+                const law = lawsDatabase.find(g => g.cat === cat).laws.find(l => l.id == id);
                 
-                if (law.jail === "Doživotie") {
-                    lifeImprisonment = true;
-                } else if (typeof law.jail === "number") {
-                    totalJail += law.jail;
-                }
+                fine += law.fine;
+                if (typeof law.jail === 'number') jail += law.jail;
                 
-                chargesBlocks += "```\n" + law.code + "\n" + law.cz + "\n" + law.en + "\n" + law.type + "\n" + (law.jail === "Doživotie" ? "Doživotie" : law.jail + " rok/let") + "\n$" + law.fine.toLocaleString() + "\n```\n\n";
+                charges += `- ${law.code} | ${law.cz} (${law.jail} let, $${law.fine})\n`;
             });
 
-            const template = `# CPZ REPORT
-
-**Údaje o osobě:**
-
- •   Pohlaví: ${gender}
- •   Jméno a Příjmení: ${name} ${surname}
- •   Datum narození: ${dob}
-⸻
-
-**Údaje o zadržení:**
-
- •   Důvod: ${reason}
- •   Policista: ${officer}
- •   Lékařské vyšetření: nežádal
- •   Byla přečtena Miranda: ${miranda}
- •   Věci udělené do osobních věcí: ${itemsRet}
- •   Věci udělené do evidence: ${itemsEvid}
-
-
-**Mugshot, Otisky prstů:**
-
- •   Mugshot hotov.
- •   Otisky prstů zhotoveny.
-⸻
-
-**Charges / dodatečné poznámky:**
-
-${chargesBlocks}
-**Celkem:**
-
-\`\`\`
-Pokuta: $${totalFine.toLocaleString()}
-Vazba: ${lifeImprisonment ? "DOŽIVOTIE" : totalJail + " rok/let"}
-\`\`\``;
-
-            document.getElementById('output-area').innerText = template;
-            copyToClipboard();
+            const report = `# CPZ REPORT\n\n**Osoba:** ${name} ${surname}\n**Důvod:** ${reason}\n**Policista:** ${officer}\n\n**Obvinění:**\n${charges}\n**CELKEM:** $${fine} | ${jail} let`;
+            
+            document.getElementById('output-area').innerText = report;
+            navigator.clipboard.writeText(report);
+            alert("Zkopírováno do schránky!");
         }
 
-        function copyToClipboard() {
-            const text = document.getElementById('output-area').innerText;
-            if(text.length < 50) return;
-            navigator.clipboard.writeText(text);
-            const out = document.getElementById('output-area');
-            out.style.borderColor = "#00ff41";
-            setTimeout(() => { out.style.borderColor = "#333"; }, 1000);
-        }
-
-        window.onload = initLaws;
+        window.onload = init;
     </script>
 </body>
 </html>
