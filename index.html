@@ -222,9 +222,9 @@
     <div id="page-cpz" class="container page">
         <h1>CPZ Report Generator</h1>
         <div class="grid-form">
-            <div><label>Jméno</label><input type="text" id="sus-name" placeholder="John"></div>
-            <div><label>Příjmení</label><input type="text" id="sus-surname" placeholder="Doe"></div>
-            <div><label>Datum narození</label><input type="text" id="sus-dob" placeholder="01.01.1995"></div>
+            <div><label>Jméno</label><input type="text" id="sus-name" placeholder="John" autocomplete="false"></div>
+            <div><label>Příjmení</label><input type="text" id="sus-surname" placeholder="Doe" autocomplete="false"></div>
+            <div><label>Datum narození</label><input type="date" id="sus-dob" placeholder="01.01.1995" autocomplete="false"></div>
             <div><label>Pohlaví</label><select id="sus-gender">
                     <option>Muž</option>
                     <option>Žena</option>
@@ -237,9 +237,9 @@
                     <option>NE</option>
                 </select></div>
             <div class="full-width"><label>Věci k navrácení</label><input type="text" id="items-return"
-                    placeholder="ID, DL, telefon"></div>
+                    placeholder="ID, DL, telefon" autocomplete="false"></div>
             <div class="full-width"><label>Věci do evidence</label><input type="text" id="items-evidence"
-                    placeholder="50g marihuany"></div>
+                    placeholder="50g marihuany" autocomplete="false"></div>
         </div>
 
         <div style="margin-bottom:10px;">
