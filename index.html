@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="cs">
-
+<link rel="icon" href="favicon-32x32.png">
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MDT - Generátor</title>
-    <link rel="icon" href="images/favicon-32x32.png">
     <style>
         :root {
             --police-blue: #1a237e;
@@ -109,49 +109,45 @@
         }
 
         .laws-selection {
-            max-height: 450px;
+            max-height: 500px;
             overflow-y: auto;
             border: 1px solid #333;
             background: #151515;
             border-radius: 8px;
         }
 
-        .law-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            border-bottom: 1px solid #222;
-            gap: 15px;
-            transition: background 0.2s;
-        }
-
-        .law-item:hover {
-            background: #1f1f1f;
-        }
-
         .tag {
-            min-width: 90px;
-            padding: 4px 0;
-            border-radius: 4px;
-            font-size: 0.7rem;
+            min-width: 115px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
             font-weight: 900;
             text-align: center;
             text-transform: uppercase;
+            display: inline-block;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .tag-tc {
-            background: var(--crime);
-            color: white;
+        .tag-tc { background: var(--crime); color: white; }
+        .tag-pc { background: var(--misdemeanor); color: black; }
+        .tag-pt { background: var(--infraction); color: white; }
+
+        .law-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #222;
+            gap: 20px;
+            transition: background 0.2s;
         }
 
-        .tag-pc {
-            background: var(--misdemeanor);
-            color: black;
-        }
+        .law-item:hover { background: #1f1f1f; }
 
-        .tag-pt {
-            background: var(--infraction);
-            color: white;
+        .law-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
         }
 
         .law-text {
@@ -198,65 +194,15 @@
             font-size: 0.9rem;
         }
 
-        th,
-        td {
+        th, td {
             border: 1px solid #333;
-            padding: 10px;
+            padding: 12px;
             text-align: left;
         }
 
-        th {
-            background: var(--police-blue);
-        }
+        th { background: var(--police-blue); }
 
-        .col-desc {
-            color: #aaa;
-            font-style: italic;
-        }
-
-        .tag {
-            min-width: 110px;
-            /* Zvětšeno z 90px */
-            padding: 6px 10px;
-            /* Zvětšeno pro lepší čitelnost */
-            border-radius: 6px;
-            /* Více zaoblené */
-            font-size: 0.85rem;
-            /* Zvětšeno z 0.7rem */
-            font-weight: 900;
-            text-align: center;
-            text-transform: uppercase;
-            display: inline-block;
-            letter-spacing: 0.5px;
-        }
-
-        .tag-tc {
-            background: var(--crime);
-            color: white;
-            box-shadow: 0 2px 4px rgba(255, 82, 82, 0.3);
-        }
-
-        .tag-pc {
-            background: var(--misdemeanor);
-            color: black;
-            box-shadow: 0 2px 4px rgba(255, 171, 64, 0.3);
-        }
-
-        .tag-pt {
-            background: var(--infraction);
-            color: white;
-            box-shadow: 0 2px 4px rgba(68, 138, 255, 0.3);
-        }
-
-        /* Úprava law-item pro lepší zarovnání s většími tagy */
-        .law-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            /* Více místa kolem položek */
-            border-bottom: 1px solid #222;
-            gap: 20px;
-        }
+        .col-desc { color: #aaa; font-style: italic; }
     </style>
 </head>
 
@@ -270,7 +216,7 @@
 
     <div id="page-home" class="container page active">
         <h1>Vítejte v MDT</h1>
-        <p>Systém pro evidenci a generování reportů do CPZ.</p>
+        <p>Systém pro evidenci a generování reportů do CPZ (Cely předběžného zadržení).</p>
     </div>
 
     <div id="page-cpz" class="container page">
@@ -302,7 +248,7 @@
         </div>
 
         <div class="laws-selection" id="laws-list"></div>
-        <button class="btn-generate" onclick="generateReport()">VYGENEROVAT A ZKOPIROVAT</button>
+        <button class="btn-generate" onclick="generateReport()">VYGENEROVAT A ZKOPÍROVAT</button>
         <div id="output-area" onclick="copyToClipboard()">Vyplňte formulář a vyberte paragrafy...</div>
     </div>
 
@@ -341,8 +287,10 @@
                     { id: 6, code: "PC148(a)(1)", type: "Misdemeanor", cz: "Bránění zatčení", en: "Resisting Officer", fine: 4000, jail: 4, desc: "Aktivní odpor při zatýkání nebo bránění ve výkonu." },
                     { id: 7, code: "PC415", type: "Misdemeanor", cz: "Rušení veřejného pořádku", en: "Disturbing the Peace", fine: 5000, jail: 0, desc: "Nadměrný hluk, vyvolávání rvaček na veřejnosti." },
                     { id: 8, code: "PC602", type: "Misdemeanor", cz: "Vstup na cizí pozemek", en: "Trespassing", fine: 6000, jail: 2, desc: "Neoprávněný vstup na soukromý pozemek." },
+                    { id: 9, code: "PC646.9", type: "Wobbler", cz: "Stalking", en: "Stalking", fine: 15000, jail: 12, desc: "Neustálé obtěžování nebo sledování jiné osoby." },
                     { id: 10, code: "PC186.22", type: "Felony", cz: "Gangová činnost", en: "Gang Participation", fine: 30000, jail: 16, desc: "Aktivní účast v organizované zločinecké skupině." },
-                    { id: 11, code: "PC12022.2", type: "Felony", cz: "Nošení balistické vesty při násilném činu", en: "Body armor enhancement", fine: 3000, jail: 4, desc: "Trestné zvýšení při spáchání násilného trestného činu." }
+                    { id: 11, code: "PC12022.2(a)", type: "Felony", cz: "Nošení vesty při násilném činu", en: "Wearing body armor", fine: 3000, jail: 4, desc: "Využití balistické ochrany při páchání násilné trestné činnosti." },
+                    { id: 12, code: "PC31360", type: "Felony", cz: "Nelegální držení balistické vesty", en: "Unlawful possession of body armor", fine: 5000, jail: 2, desc: "Držení vesty bez patřičného povolení." }
                 ]
             },
             {
@@ -350,32 +298,88 @@
                 laws: [
                     { id: 13, code: "PC484", type: "Misdemeanor", cz: "Drobná krádež", en: "Petty Theft", fine: 4000, jail: 2, desc: "Krádež majetku nízké hodnoty." },
                     { id: 14, code: "PC487", type: "Wobbler", cz: "Velká krádež", en: "Grand Theft", fine: 15000, jail: 12, desc: "Krádež majetku vysoké hodnoty nebo vozidla." },
-                    { id: 15, code: "PC518", type: "Felony", cz: "Vydírání", en: "Extortion", fine: 25000, jail: 14, desc: "Získání majetku nebo výhod pomocí nátlaku a pohrůžek." }
+                    { id: 15, code: "PC518", type: "Felony", cz: "Vydírání", en: "Extortion", fine: 25000, jail: 14, desc: "Získání majetku nebo výhod pomocí nátlaku a pohrůžek." },
+                    { id: 16, code: "PC594", type: "Wobbler", cz: "Vandalismus", en: "Vandalism", fine: 12000, jail: 5, desc: "Úmyslné poškození cizí věci." },
+                    { id: 17, code: "PC594.35", type: "Wobbler", cz: "Vykrádání hrobů", en: "Cemetery Vandalism", fine: 15000, jail: 2, desc: "Zneuctění nebo vykrádání místa posledního odpočinku." }
+                ]
+            },
+            {
+                category: "IV. Vloupání, loupeže",
+                laws: [
+                    { id: 18, code: "PC213(a)(1)", type: "Felony", cz: "Loupež I. stupně", en: "Robbery 1st Degree", fine: 40000, jail: 14, desc: "Násilné odcizení věci přímo z držení osoby." },
+                    { id: 19, code: "PC213(a)(2)", type: "Felony", cz: "Loupež II. stupně", en: "Robbery 2nd Degree", fine: 30000, jail: 12, desc: "Méně závažné formy loupeže." },
+                    { id: 20, code: "PC215", type: "Felony", cz: "Vykrádání vozidla", en: "Carjacking", fine: 13000, jail: 6, desc: "Násilné zmocnění se obsazeného vozidla." },
+                    { id: 21, code: "PC459I", type: "Felony", cz: "Vloupání I. stupně", en: "Burglary 1st Degree", fine: 40000, jail: 12, desc: "Násilné vniknutí do obydleného objektu." },
+                    { id: 22, code: "PC459II", type: "Wobbler", cz: "Vloupání II. stupně", en: "Burglary 2nd Degree", fine: 30000, jail: 9, desc: "Vniknutí do neobydlených prostor nebo komerčních budov." }
                 ]
             },
             {
                 category: "V. Násilné trestné činy",
                 laws: [
                     { id: 23, code: "PC187-1", type: "Felony", cz: "Vražda I. stupně", en: "Murder 1st Degree", fine: 0, jail: "Doživotí", desc: "Předem promyšlené a úmyslné usmrcení osoby." },
+                    { id: 24, code: "PC187-2", type: "Felony", cz: "Vražda II. stupně", en: "Murder 2nd Degree", fine: 0, jail: "Doživotí", desc: "Úmyslné usmrcení bez předchozího uvážení." },
                     { id: 25, code: "PC192V", type: "Felony", cz: "Zabití dobrovolné", en: "Voluntary Manslaughter", fine: 85000, jail: 40, desc: "Usmrcení osoby v afektu (náhlý hněv, hádka)." },
+                    { id: 26, code: "PC192I", type: "Felony", cz: "Zabití nedobrovolné", en: "Involuntary Manslaughter", fine: 35000, jail: 16, desc: "Usmrcení z nedbalosti bez úmyslu zabít." },
+                    { id: 27, code: "PC203", type: "Felony", cz: "Mrzačení", en: "Mayhem", fine: 45000, jail: 32, desc: "Úmyslné způsobení trvalého tělesného poškození." },
+                    { id: 28, code: "PC206", type: "Felony", cz: "Mučení", en: "Torture", fine: 0, jail: "Doživotí", desc: "Způsobení extrémní bolesti za účelem pomsty či nátlaku." },
+                    { id: 29, code: "PC207", type: "Felony", cz: "Únos", en: "Kidnapping", fine: 60000, jail: 13, desc: "Protiprávní omezení svobody a transport osoby." },
+                    { id: 30, code: "PC261", type: "Felony", cz: "Znásilnění", en: "Rape", fine: 40000, jail: 25, desc: "Sexuální styk bez souhlasu oběti." },
                     { id: 31, code: "PC664/187", type: "Felony", cz: "Pokus o vraždu", en: "Attempted Murder", fine: 55000, jail: 10, desc: "Neúspěšný pokus o úmyslné usmrcení osoby." }
+                ]
+            },
+            {
+                category: "VI. Zbraně",
+                laws: [
+                    { id: 32, code: "PC29800", type: "Felony", cz: "Nelegální držení zbraně", en: "Prohibited Possession", fine: 25000, jail: 8, desc: "Držení zbraně osobou, která k tomu nemá oprávnění." },
+                    { id: 33, code: "PC30605", type: "Felony", cz: "Držení nelegální zbraně", en: "Assault Weapon", fine: 35000, jail: 13, desc: "Držení zbraně, která je zákonem zakázána." },
+                    { id: 34, code: "PC30600", type: "Felony", cz: "Automatická zbraň", en: "Assault Weapon", fine: 55000, jail: 15, desc: "Držení nebo prodej plně automatické zbraně." },
+                    { id: 35, code: "PC25850", type: "Misdemeanor", cz: "Nabitá zbraň", en: "Carrying Loaded Firearm", fine: 12000, jail: 2, desc: "Přeprava nebo nošení nabité zbraně na veřejnosti." },
+                    { id: 36, code: "PC417(a)(2)", type: "Misdemeanor", cz: "Ohrožování zbraní", en: "Brandishing Weapon", fine: 10000, jail: 3, desc: "Vytahování zbraně s cílem někoho zastrašit." },
+                    { id: 37, code: "PC246.3", type: "Wobbler", cz: "Nedbalostní střelba", en: "Negligent Discharge", fine: 25000, jail: 9, desc: "Výstřel ze zbraně bez ohledu na bezpečnost okolí." },
+                    { id: 38, code: "PC25850(a)", type: "Wobbler", cz: "Nelegální open carry (nabitá)", en: "Loaded firearm in public", fine: 1000, jail: 3, desc: "Viditelné nošení nabité zbraně bez povolení." },
+                    { id: 39, code: "PC26350", type: "Misdemeanor", cz: "Otevřené nošení dlouhé zbraně", en: "Open Carry Long Gun", fine: 7000, jail: 2, desc: "Viditelné nošení pušky nebo brokovnice na veřejnosti." }
                 ]
             },
             {
                 category: "VII. Proti policistům",
                 laws: [
                     { id: 40, code: "PC148-P", type: "Misdemeanor", cz: "Odporování policistovi", en: "Resisting Officer", fine: 5000, jail: 3, desc: "Neposlechnutí zákonné výzvy nebo pasivní odpor." },
+                    { id: 41, code: "PC69", type: "Felony", cz: "Vyhrožování policistovi", en: "Threats Against Officer", fine: 15000, jail: 2, desc: "Verbální nebo fyzické vyhrožování násilím vůči LEO." },
                     { id: 42, code: "PC241(c)", type: "Wobbler", cz: "Útok na policistu", en: "Assault on Officer", fine: 20000, jail: 5, desc: "Fyzické napadení policisty během výkonu služby." },
-                    { id: 44, code: "PC245(d)(3)", type: "Felony", cz: "Střelba na policistu", en: "Shooting at Officer", fine: 32000, jail: 13, desc: "Úmyslný výstřel ze zbraně směrem k policistovi." }
+                    { id: 43, code: "PC245(d)(1)", type: "Felony", cz: "Útok zbraní na policistu", en: "ADW on Officer", fine: 27000, jail: 15, desc: "Napadení policisty smrtící zbraní." },
+                    { id: 44, code: "PC245(d)(3)", type: "Felony", cz: "Střelba na policistu", en: "Shooting at Officer", fine: 32000, jail: 13, desc: "Úmyslný výstřel ze zbraně směrem k policistovi." },
+                    { id: 45, code: "PC148(a)(1)", type: "Misdemeanor", cz: "Neuposlechnutí výzvy", en: "Resisting, delaying peace officer", fine: 5000, jail: 1, desc: "Zdržování nebo bránění v práci úřední osoby." }
+                ]
+            },
+            {
+                category: "VIII. Drogy",
+                laws: [
+                    { id: 46, code: "HS11377", type: "Misdemeanor", cz: "Držení metamfetaminu", en: "Possession of Meth", fine: 4000, jail: 3, desc: "Držení omamných látek pro vlastní potřebu." },
+                    { id: 47, code: "HS11378", type: "Felony", cz: "Držení za účelem prodeje", en: "Possession for Sale", fine: 20000, jail: 10, desc: "Množství drog indikující obchodní záměr." },
+                    { id: 48, code: "HS11379", type: "Felony", cz: "Prodej drog", en: "Sale of Drugs", fine: 23000, jail: 14, desc: "Distribuce nebo nabízení omamných látek." },
+                    { id: 49, code: "HS11359", type: "Felony", cz: "Marihuana za účelem prodeje", en: "Marijuana for Sale", fine: 25000, jail: 15, desc: "Nadlimitní držení marihuany určené k prodeji." },
+                    { id: 50, code: "HS11358", type: "Felony", cz: "Pěstování marihuany", en: "Cultivation of Marijuana", fine: 28000, jail: 12, desc: "Provozování nelegální pěstírny." }
                 ]
             },
             {
                 category: "IX. Dopravní",
                 laws: [
                     { id: 51, code: "VC22349", type: "Infraction", cz: "Překročení max. rychlosti", en: "Speeding", fine: 2000, jail: 0, desc: "Překročení povolené rychlosti na dálnici nebo silnici." },
+                    { id: 52, code: "VC22350", type: "Infraction", cz: "Nepřiměřená rychlost", en: "Basic Speed Law", fine: 3000, jail: 0, desc: "Jízda rychlostí neodpovídající stavu vozovky." },
+                    { id: 53, code: "VC22349-15", type: "Infraction", cz: "Překročení rychlosti +15 mph", en: "Speeding 1–15 mph Over", fine: 3000, jail: 0, desc: "Mírné překročení limitu." },
+                    { id: 54, code: "VC22349-25", type: "Infraction", cz: "Překročení rychlosti +16–25 mph", en: "Speeding 16–25 mph Over", fine: 4000, jail: 0, desc: "Střední překročení limitu." },
+                    { id: 55, code: "VC22349-26", type: "Misdemeanor", cz: "Vysoké překročení rychlosti", en: "Speeding 26+ mph Over", fine: 6000, jail: 1, desc: "Značné překročení povolené rychlosti." },
                     { id: 56, code: "VC23103", type: "Misdemeanor", cz: "Bezohledná jízda", en: "Reckless Driving", fine: 8000, jail: 1, desc: "Jízda s úmyslným přehlížením bezpečnosti osob a majetku." },
+                    { id: 57, code: "VC22348(b)", type: "Misdemeanor", cz: "Extrémní rychlost (>100 mph)", en: "Speeding Over 100 mph", fine: 10000, jail: 2, desc: "Velmi nebezpečná jízda vysokou rychlostí." },
                     { id: 58, code: "VC2800.1", type: "Misdemeanor", cz: "Únik policii", en: "Evading Police", fine: 6000, jail: 2, desc: "Ujíždění před policejní hlídkou za použití majáků." },
-                    { id: 61, code: "VC23152", type: "Misdemeanor", cz: "Jízda pod vlivem", en: "DUI", fine: 4000, jail: 1, desc: "Řízení pod vlivem alkoholu nebo omamných látek." }
+                    { id: 59, code: "VC2800.2", type: "Felony", cz: "Nebezpečný únik", en: "Felony Evading", fine: 9000, jail: 3, desc: "Únik policii, při kterém dochází k ohrožení ostatních." },
+                    { id: 60, code: "VC20001", type: "Felony", cz: "Hit & Run se zraněním", en: "Hit and Run Injury", fine: 2000, jail: 4, desc: "Ujetí od dopravní nehody, při které byl někdo zraněn." },
+                    { id: 61, code: "VC23152", type: "Misdemeanor", cz: "Jízda pod vlivem", en: "DUI", fine: 4000, jail: 1, desc: "Řízení pod vlivem alkoholu nebo omamných látek." },
+                    { id: 62, code: "VC14601", type: "Misdemeanor", cz: "Jízda se zákazem", en: "Driving on Suspended License", fine: 5000, jail: 2, desc: "Řízení vozidla i přes odebraný řidičský průkaz." },
+                    { id: 63, code: "VC27156", type: "Infraction", cz: "Nelegální tuning", en: "Illegal Vehicle Modification", fine: 5000, jail: 0, desc: "Neschválené mechanické úpravy na vozidle." },
+                    { id: 64, code: "VC24002", type: "Misdemeanor", cz: "Nebezpečně upravené vozidlo", en: "Unsafe Vehicle Modification", fine: 7000, jail: 1, desc: "Ohrožení silničního provozu technickým stavem vozidla." },
+                    { id: 65, code: "VC27600", type: "Infraction", cz: "Nelegální neony", en: "Illegal Lighting Equipment", fine: 3000, jail: 0, desc: "Instalace nelegálního světelného zařízení na vozidlo." },
+                    { id: 66, code: "VC5200", type: "Infraction", cz: "Jízda bez SPZ", en: "Driving without license plates", fine: 1000, jail: 0, desc: "Chybějící nebo nesprávně umístěná SPZ." }
                 ]
             }
         ];
@@ -405,11 +409,11 @@
                 tableBody.innerHTML += `<tr style="background:#1a237e33"><td colspan="6" style="color:var(--accent); font-weight:bold; padding:10px;">${group.category}</td></tr>`;
 
                 group.laws.forEach(law => {
-                    const tag = getTagClass(law.type);
+                    const tagClass = getTagClass(law.type);
                     listDiv.innerHTML += `
                         <div class="law-item">
                             <input type="checkbox" class="law-checkbox" value="${law.id}" data-cat="${group.category}">
-                            <span class="tag ${tag}">${law.type}</span>
+                            <span class="tag ${tagClass}">${law.type}</span>
                             <div class="law-text">
                                 <strong>${law.code}</strong> - ${law.cz}
                                 <span class="law-desc">${law.desc}</span>
@@ -419,7 +423,7 @@
                     tableBody.innerHTML += `
                         <tr>
                             <td><strong>${law.code}</strong></td>
-                            <td><span class="tag ${tag}">${law.type}</span></td>
+                            <td><span class="tag ${tagClass}">${law.type}</span></td>
                             <td>${law.cz} / ${law.en}</td>
                             <td class="col-desc">${law.desc}</td>
                             <td>${law.fine.toLocaleString()}$</td>
