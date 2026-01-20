@@ -262,7 +262,7 @@
                     <th>Znění (CZ/EN)</th>
                     <th>Popis / Poznámka</th>
                     <th>Pokuta</th>
-                    <th>Vazba</th>
+                    <th>Vazba (roky)</th>
                 </tr>
             </thead>
             <tbody id="laws-table-body"></tbody>
@@ -410,13 +410,15 @@
 
                 group.laws.forEach(law => {
                     const tagClass = getTagClass(law.type);
+                    const jailLabel = typeof law.jail === 'number' ? law.jail + ' r.' : law.jail;
+
                     listDiv.innerHTML += `
                         <div class="law-item">
                             <input type="checkbox" class="law-checkbox" value="${law.id}" data-cat="${group.category}">
                             <span class="tag ${tagClass}">${law.type}</span>
                             <div class="law-text">
                                 <strong>${law.code}</strong> - ${law.cz}
-                                <span class="law-desc">${law.desc}</span>
+                                <span class="law-desc">${law.desc} (${jailLabel})</span>
                             </div>
                         </div>`;
 
@@ -427,7 +429,7 @@
                             <td>${law.cz} / ${law.en}</td>
                             <td class="col-desc">${law.desc}</td>
                             <td>${law.fine.toLocaleString()}$</td>
-                            <td>${law.jail}</td>
+                            <td>${jailLabel}</td>
                         </tr>`;
                 });
             });
@@ -452,10 +454,12 @@
                 if (typeof law.jail === 'number') totalJail += law.jail;
                 else if (law.jail.includes("Doživotí")) jailIsLife = true;
 
-                charges += `\`\`\`\n${law.code}\n${law.cz}\n${law.en}\nPopis: ${law.desc}\n${law.type}\nVazba: ${law.jail}${typeof law.jail === 'number' ? ' měs.' : ''}\nPokuta: $${law.fine.toLocaleString()}\n\`\`\`\n\n`;
+                const jailDisplay = typeof law.jail === 'number' ? law.jail + ' r.' : law.jail;
+
+                charges += `\`\`\`\n${law.code}\n${law.cz}\n${law.en}\nPopis: ${law.desc}\n${law.type}\nVazba: ${jailDisplay}\nPokuta: $${law.fine.toLocaleString()}\n\`\`\`\n\n`;
             });
 
-            const template = `# CPZ REPORT\n\n**Osoba:** ${getVal('sus-name')} ${getVal('sus-surname')} (${getVal('sus-gender')})\n**Narození:** ${getVal('sus-dob')}\n⸻\n**Důvod:** ${getVal('sus-reason')}\n**Policista:** ${getVal('officer')}\n**Miranda:** ${getVal('miranda')}\n**Věci k vrácení:** ${getVal('items-return')}\n**Věci v evidenci:** ${getVal('items-evidence')}\n⸻\n**Charges:**\n\n${charges}**Celkem:**\n\`\`\`\nPokuta: $${totalFine.toLocaleString()}\nVazba: ${jailIsLife ? 'DOŽIVOTÍ' : totalJail + ' měs.'}\n\`\`\``;
+            const template = `# CPZ REPORT\n\n**Osoba:** ${getVal('sus-name')} ${getVal('sus-surname')} (${getVal('sus-gender')})\n**Narození:** ${getVal('sus-dob')}\n⸻\n**Důvod:** ${getVal('sus-reason')}\n**Policista:** ${getVal('officer')}\n**Miranda:** ${getVal('miranda')}\n**Věci k vrácení:** ${getVal('items-return')}\n**Věci v evidenci:** ${getVal('items-evidence')}\n⸻\n**Charges:**\n\n${charges}**Celkem:**\n\`\`\`\nPokuta: $${totalFine.toLocaleString()}\nVazba: ${jailIsLife ? 'DOŽIVOTÍ' : totalJail + ' let'}\n\`\`\``;
 
             document.getElementById('output-area').innerText = template;
             copyToClipboard();
